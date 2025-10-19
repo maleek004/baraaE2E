@@ -1,0 +1,111 @@
+table vw_fact_sales
+	lineageTag: 73607d1a-2f00-4555-89a5-4b8ed2548bff
+	sourceLineageTag: [dbo].[vw_fact_sales]
+
+	column order_number
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 403af1c4-fd8a-428e-b155-03e06487857a
+		sourceLineageTag: order_number
+		summarizeBy: none
+		sourceColumn: order_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_key
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 2743d6ce-1dfc-4ca4-80a7-bee0f7b0f57f
+		sourceLineageTag: product_key
+		summarizeBy: sum
+		sourceColumn: product_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_key
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: b3026c19-052c-46c7-bb3c-87fd159d827d
+		sourceLineageTag: customer_key
+		summarizeBy: sum
+		sourceColumn: customer_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: ad03ea0c-4e11-43ad-9954-d600f9d31867
+		sourceLineageTag: order_date
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipping_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: eef0ba5e-c0ef-4763-9a99-5146c50a914c
+		sourceLineageTag: shipping_date
+		summarizeBy: none
+		sourceColumn: shipping_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column due_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 4dfba600-51ad-44d9-b08d-9403e6d9986e
+		sourceLineageTag: due_date
+		summarizeBy: none
+		sourceColumn: due_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column sales_amount
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 524b1bef-3160-4065-bec1-b9261fae16ee
+		sourceLineageTag: sales_amount
+		summarizeBy: sum
+		sourceColumn: sales_amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: a5536be0-7cbd-4742-8a4e-fdb2f16daf84
+		sourceLineageTag: quantity
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column price
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 690ba829-681a-4104-b635-2f367fcbd74a
+		sourceLineageTag: price
+		summarizeBy: sum
+		sourceColumn: price
+
+		annotation SummarizationSetBy = Automatic
+
+	partition vw_fact_sales = entity
+		mode: directLake
+		source
+			entityName: vw_fact_sales
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

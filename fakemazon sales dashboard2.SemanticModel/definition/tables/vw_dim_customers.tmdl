@@ -1,0 +1,121 @@
+table vw_dim_customers
+	lineageTag: f089d365-d20e-4123-90e2-83d0cca8a6c1
+
+	column customer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 49f9b79d-5629-4bac-a7e2-45e0dce4f26b
+		summarizeBy: none
+		sourceColumn: customer_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 30799020-c91b-4ceb-9137-d3565f1d109c
+		summarizeBy: sum
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_number
+		dataType: string
+		lineageTag: 7aaa350f-27c4-45f4-9b60-d0f8a9ca429b
+		summarizeBy: none
+		sourceColumn: customer_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_name
+		dataType: string
+		lineageTag: cedf37f7-5d4a-42bf-9997-3f812ca742d2
+		summarizeBy: none
+		sourceColumn: first_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_name
+		dataType: string
+		lineageTag: 638879bf-f893-47d9-b069-ba27d9307cea
+		summarizeBy: none
+		sourceColumn: last_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column country
+		dataType: string
+		lineageTag: c9d51da1-561c-4f23-8062-9f91026f0ac0
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: e54c2a9b-4d24-4c96-9ec2-3adfac302f20
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column marital_status
+		dataType: string
+		lineageTag: fd1891fb-1ec1-4885-a6db-67e560757d7e
+		summarizeBy: none
+		sourceColumn: marital_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column gender
+		dataType: string
+		lineageTag: c070b47e-242a-4186-a3cb-5fe46a35409f
+		summarizeBy: none
+		sourceColumn: gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column birthdate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b095336e-3efa-4baf-8280-60a2f7ed8353
+		summarizeBy: none
+		sourceColumn: birthdate
+
+		variation Variation
+			isDefault
+			relationship: d4a7a75e-6a9b-43b4-883b-87dc50835a51
+			defaultHierarchy: LocalDateTable_abf004e5-5776-4111-9ff5-53d2dfacab03.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column create_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2af72f98-3b52-4761-bf79-3c9a85a9d2fc
+		summarizeBy: none
+		sourceColumn: create_date
+
+		variation Variation
+			isDefault
+			relationship: e73705b0-6c72-453b-993d-c2cd39e7c201
+			defaultHierarchy: LocalDateTable_a5665f50-eb92-45dd-b9a8-73ab9aced06a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition vw_dim_customers = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Databases("xt5ytmuaefdudosvbltiljpkaq-cmr3fg4zzi2ufphqc3hsobhbei.datawarehouse.fabric.microsoft.com"),
+				    Baraa_WH = Source{[Name="Baraa_WH"]}[Data],
+				    dbo_vw_dim_customers = Baraa_WH{[Schema="dbo",Item="vw_dim_customers"]}[Data]
+				in
+				    dbo_vw_dim_customers
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,48 @@
+table PDimensionID
+	lineageTag: e01d27b8-103d-43c7-93a1-b7708f98bc0f
+
+	column PDimensionID
+		lineageTag: a5d26ab5-3fbb-49bc-8adc-7f0719a3b79c
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'PDimensionID Order'
+
+		relatedColumnDetails
+			groupByColumn: 'PDimensionID Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PDimensionID Fields'
+		isHidden
+		lineageTag: 6d603875-34a8-4712-91ba-73f88cb0b0ca
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'PDimensionID Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PDimensionID Order'
+		isHidden
+		formatString: 0
+		lineageTag: b8e3610b-75fe-4eda-bea3-f539bd4a0ba5
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition PDimensionID = calculated
+		mode: import
+		source =
+				{
+				    ("customer_id", NAMEOF('vw_dim_customers'[customer_id]), 0),
+				    ("product_id", NAMEOF('vw_dim_products'[product_id]), 1)
+				}
+
+	annotation PBI_Id = 3250934bd35a43deb7520813f1b6a0dc
+

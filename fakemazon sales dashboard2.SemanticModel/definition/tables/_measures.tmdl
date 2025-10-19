@@ -1,0 +1,945 @@
+table _measures
+	lineageTag: 80779ccb-5203-4aa5-a816-50337ec00903
+
+	measure 'Dynamic Text/Title (Multi-Select) - Filter Selections' = ```
+			-- Configuration constants
+			VAR LineBreak = UNICHAR(10)
+			VAR ExcludeThreshold = 3  -- Show "excluding" format when 3 or fewer items are unselected
+			VAR MaxDisplayItems = 4   -- Maximum items to show before truncating with "and X more"
+			
+			-- Location filtering logic with enhanced length management
+			VAR IsCountryFiltered = ISFILTERED('vw_dim_customers'[country])
+			VAR IsCityFiltered = ISFILTERED('vw_dim_customers'[city])
+			
+			VAR SelectedLocation = 
+			    IF(IsCountryFiltered,
+			        -- Region is filtered, check state logic
+			        IF(IsCityFiltered,
+			            -- Both Region and State are filtered
+			            VAR AllCitiesInCountry = CALCULATETABLE(
+			                VALUES('vw_dim_customers'[city]),
+			                ALLEXCEPT('vw_dim_customers', 'vw_dim_customers'[country])
+			            )
+			            VAR SelectedCities = VALUES('vw_dim_customers'[city])
+			            VAR UnselectedCities = EXCEPT(AllCitiesInCountry, SelectedCities)
+			            VAR UnselectedCitiesCount = COUNTROWS(UnselectedCities)
+			            VAR TotalCitiesInCountry = COUNTROWS(AllCitiesInCountry)
+			            VAR SelectedCitiesCount = COUNTROWS(SelectedCities)
+			            VAR SelectedCity = CONCATENATEX(VALUES('vw_dim_customers'[country]), 'vw_dim_customers'[country], ", ")
+			            
+			            VAR LocationResult = 
+			                IF(UnselectedCitiesCount = 0,
+			                    -- All states selected, show only region
+			                    SelectedCity,
+			                    IF(UnselectedCitiesCount <= ExcludeThreshold && UnselectedCitiesCount < TotalCitiesInCountry,
+			                        -- Few states unselected, show "excluding" format
+			                        SelectedCity & " (excluding " & CONCATENATEX(UnselectedCities, 'vw_dim_customers'[city], ", ") & ")",
+			                        -- Many states unselected, check if we should truncate selected states
+			                        IF(SelectedCitiesCount <= MaxDisplayItems,
+			                            -- Show all selected states
+			                            SelectedCity & " - " & CONCATENATEX(SelectedCities, 'vw_dim_customers'[city], ", "),
+			                            -- Truncate with "and X more" format
+			                            VAR FirstStates = CONCATENATEX(
+			                                TOPN(MaxDisplayItems, SelectedCities, 'vw_dim_customers'[city], ASC),
+			                                'vw_dim_customers'[city], ", "
+			                            )
+			                            VAR RemainingCount = SelectedCitiesCount - MaxDisplayItems
+			                            RETURN SelectedCity & " - " & FirstStates & " and " & RemainingCount & " more"
+			                        )
+			                    )
+			                )
+			            RETURN LocationResult,
+			            
+			            -- Only Region filtered
+			            VAR SelectedCityCount = COUNTROWS(VALUES('vw_dim_customers'[country]))
+			            VAR RegionText = CONCATENATEX(VALUES('vw_dim_customers'[country]), 'vw_dim_customers'[country], ", ")
+			            RETURN 
+			                IF(SelectedCityCount <= MaxDisplayItems,
+			                    RegionText,
+			                    VAR FirstRegions = CONCATENATEX(
+			                        TOPN(MaxDisplayItems, VALUES('vw_dim_customers'[country]), 'vw_dim_customers'[country], ASC),
+			                        'vw_dim_customers'[country], ", "
+			                    )
+			                    VAR RemainingRegions = SelectedCityCount - MaxDisplayItems
+			                    RETURN FirstRegions & " and " & RemainingRegions & " more"
+			                )
+			        ),
+			        IF(IsCityFiltered,
+			            -- Only State filtered
+			            VAR SelectedCitiesCount = COUNTROWS(VALUES('vw_dim_customers'[city]))
+			            VAR StateText = CONCATENATEX(VALUES('vw_dim_customers'[city]), 'vw_dim_customers'[city], ", ")
+			            RETURN 
+			                IF(SelectedCitiesCount <= MaxDisplayItems,
+			                    StateText,
+			                    VAR FirstStates = CONCATENATEX(
+			                        TOPN(MaxDisplayItems, VALUES('vw_dim_customers'[city]), 'vw_dim_customers'[city], ASC),
+			                        'vw_dim_customers'[city], ", "
+			                    )
+			                    VAR RemainingStates = SelectedCitiesCount - MaxDisplayItems
+			                    RETURN FirstStates & " and " & RemainingStates & " more"
+			                ),
+			            
+			            -- No location filter
+			            "All Locations"
+			        )
+			    )
+			
+			
+			-- Category filtering logic with enhanced length management
+			VAR IsCategoryFiltered = ISFILTERED('vw_dim_products'[category])
+			VAR IsSubCategoryFiltered = ISFILTERED('vw_dim_products'[subcategory])
+			
+			VAR SelectedCategory = 
+			    IF(IsCategoryFiltered,
+			        -- Category is filtered, check sub-category logic
+			        IF(IsSubCategoryFiltered,
+			            -- Both Category and Sub-Category are filtered
+			            VAR AllSubCategoriesInCategory = CALCULATETABLE(
+			                VALUES('vw_dim_products'[subcategory]),
+			                ALLEXCEPT('vw_dim_products', 'vw_dim_products'[category])
+			            )
+			            VAR SelectedSubCategories = VALUES('vw_dim_products'[subcategory])
+			            VAR UnselectedSubCategories = EXCEPT(AllSubCategoriesInCategory, SelectedSubCategories)
+			            VAR UnselectedSubCount = COUNTROWS(UnselectedSubCategories)
+			            VAR TotalSubCategoriesInCategory = COUNTROWS(AllSubCategoriesInCategory)
+			            VAR SelectedSubCount = COUNTROWS(SelectedSubCategories)
+			            VAR SelectedCategoryText = CONCATENATEX(VALUES('vw_dim_products'[category]), 'vw_dim_products'[category], ", ")
+			            
+			            VAR CategoryResult = 
+			                IF(UnselectedSubCount = 0,
+			                    -- All sub-categories selected, show only category
+			                    SelectedCategoryText,
+			                    IF(UnselectedSubCount <= ExcludeThreshold && UnselectedSubCount < TotalSubCategoriesInCategory,
+			                        -- Few sub-categories unselected, show "excluding" format
+			                        SelectedCategoryText & " (excluding " & CONCATENATEX(UnselectedSubCategories, 'vw_dim_products'[subcategory], ", ") & ")",
+			                        -- Many sub-categories unselected, check if we should truncate
+			                        IF(SelectedSubCount <= MaxDisplayItems,
+			                            -- Show all selected sub-categories
+			                            SelectedCategoryText & " - " & CONCATENATEX(SelectedSubCategories, 'vw_dim_products'[subcategory], ", "),
+			                            -- Truncate with "and X more" format
+			                            VAR FirstSubCategories = CONCATENATEX(
+			                                TOPN(MaxDisplayItems, SelectedSubCategories, 'vw_dim_products'[subcategory], ASC),
+			                                'vw_dim_products'[subcategory], ", "
+			                            )
+			                            VAR RemainingSubCount = SelectedSubCount - MaxDisplayItems
+			                            RETURN SelectedCategoryText & " - " & FirstSubCategories & " and " & RemainingSubCount & " more"
+			                        )
+			                    )
+			                )
+			            RETURN CategoryResult,
+			            
+			            -- Only Category filtered
+			            VAR SelectedCategoryCount = COUNTROWS(VALUES('vw_dim_products'[category]))
+			            VAR CategoryText = CONCATENATEX(VALUES('vw_dim_products'[category]), 'vw_dim_products'[category], ", ")
+			            RETURN CategoryText
+			        ),
+			        IF(IsSubCategoryFiltered,
+			            -- Only Sub-Category filtered
+			            VAR SelectedSubCount = COUNTROWS(VALUES('vw_dim_products'[subcategory]))
+			            VAR SubCategoryText = CONCATENATEX(VALUES('vw_dim_products'[subcategory]), 'vw_dim_products'[subcategory], ", ")
+			            RETURN 
+			                IF(SelectedSubCount <= MaxDisplayItems,
+			                    SubCategoryText,
+			                    VAR FirstSubCategories = CONCATENATEX(
+			                        TOPN(MaxDisplayItems, VALUES('vw_dim_products'[subcategory]), 'vw_dim_products'[subcategory], ASC),
+			                        'vw_dim_products'[subcategory], ", "
+			                    )
+			                    VAR RemainingSubCount = SelectedSubCount - MaxDisplayItems
+			                    RETURN FirstSubCategories & " and " & RemainingSubCount & " more"
+			                ),
+			            
+			            -- No category filter
+			            "All Categories"
+			        )
+			    )
+			
+			-- Year filtering logic
+			VAR SelectedYear = SELECTEDVALUE('Dates'[Year], "All Years")
+			
+			-- Return multi-line format consistently
+			RETURN 
+			    "Year: " & SelectedYear & LineBreak & 
+			    "Location: " & SelectedLocation & LineBreak & 
+			    "Category: " & SelectedCategory
+			
+			```
+		lineageTag: e10ea7f5-9cbb-43f1-a43f-acba5b25a9bc
+
+	measure '_01 Total Transactions' = ```
+			DISTINCTCOUNT(vw_fact_sales[order_number])
+			
+			
+			```
+		formatString: 0
+		lineageTag: b0f4707d-f403-4965-aecd-43539917b224
+
+	measure '_02 PY Total Transactions' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Transactions],
+			        SAMEPERIODLASTYEAR(Dates[Date])
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: b63dbcd2-635f-44a6-b6d2-9f27835a12b9
+
+	measure '_02 PM Total Transactions' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Transactions],
+			        DATEADD(Dates[Date],-1,MONTH)
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 23200852-76df-44a1-b7d0-d0669e8735ee
+
+	measure '_03 △PY Total Transactions' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]) 
+			    && NOT(ISBLANK([_02 PY Total Transactions])) 
+			    && NOT(ISBLANK([_01 Total Transactions])) 
+			    && [_01 Total Transactions] <> 0,
+			    [_01 Total Transactions] - [_02 PY Total Transactions],
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 6d470a99-875d-42e8-8ca4-b19317feaac2
+
+	measure '_04 △PM% Total Transactions' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Transactions]) || [_01 Total Transactions] = 0,
+			    "--",
+			    DIVIDE([_01 Total Transactions] - [_02 PM Total Transactions], [_02 PM Total Transactions], 0)
+			)
+			
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 350e27b6-23f0-4a34-8611-ae57500b79a6
+
+	measure '_04 △PY% Total Transactions' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Transactions]) || [_01 Total Transactions] = 0,
+			    "--",
+			    DIVIDE([_01 Total Transactions] - [_02 PY Total Transactions], [_02 PY Total Transactions], 0)
+			)
+			
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: cb8e2684-5179-4eeb-bbb9-14205866ea9b
+
+	measure '_05 CF_△PM% Total Transactions' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PM% Total Transactions] > 0, "#6A994E",
+			    [_04 △PM% Total Transactions] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: 83a1d576-2ca2-4ea1-afc0-c9b863874250
+
+	measure '_05 CF_△PY% Total Transactions' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PY% Total Transactions] > 0, "#6A994E",
+			    [_04 △PY% Total Transactions] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: 069254aa-6318-435b-acc5-26a54c3021bf
+
+	measure '_01 AC Total Transactions (DayNum)' = ```
+			
+			SUMX(
+			    VALUES(Dates[Day]),  -- Ensures daynum remain visible
+			    VAR TransactionsAC = COALESCE([_01 Total Transactions], 0)
+			    RETURN 
+			        TransactionsAC  -- Keeps 0 values visible
+			)
+				
+			
+			```
+		formatString: 0
+		lineageTag: bd9dc69e-cbe9-44db-b8fe-7af67fc0abaf
+
+	measure '_01 Total Revenue' = ```
+			SUM(vw_fact_sales[revenue])
+				
+			
+			```
+		formatString: 0
+		lineageTag: e1861562-2a1d-454f-adbd-8eedfbb5ce68
+
+	measure '_02 PY Total Revenue' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Revenue],
+			        SAMEPERIODLASTYEAR(Dates[Date])
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: e7cab090-4ad0-4367-871d-46a2873482c5
+
+	measure '_02 PM Total Revenue' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Revenue],
+			        DATEADD(Dates[Date],-1,MONTH)
+			    ),
+			    BLANK()
+			)
+				
+			
+			```
+		formatString: 0
+		lineageTag: b9fd8b44-92cd-4e2e-8045-bec9854e6fc7
+
+	measure '_03 △PY Total Revenue' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]) 
+			    && NOT(ISBLANK([_02 PY Total Revenue])) 
+			    && NOT(ISBLANK([_01 Total Revenue])) 
+			    && [_01 Total Revenue] <> 0,
+			    [_01 Total Revenue] - [_02 PY Total Revenue],
+			    BLANK()
+			)
+				
+			
+			```
+		formatString: 0
+		lineageTag: ec0e8d91-6f95-45c1-b196-04c24ce4b64c
+
+	measure '_04 △PM% Total Revenue' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Revenue]) || [_01 Total Revenue] = 0,
+			    "--",
+			    DIVIDE([_01 Total Revenue] - [_02 PM Total Revenue], [_02 PM Total Revenue], 0)
+			)
+				
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 285806b1-f1d2-40e8-860c-513327d4811f
+
+	measure '_04 △PY% Total Revenue' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Revenue]) || [_01 Total Revenue] = 0,
+			    "--",
+			    DIVIDE([_01 Total Revenue] - [_02 PY Total Revenue], [_02 PY Total Revenue], 0)
+			)
+				
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 277ecf05-1aca-4d2e-a810-fd08d6d1a05c
+
+	measure '_05 CF_△PM% Total Revenue' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PM% Total Revenue] > 0, "#6A994E",
+			    [_04 △PM% Total Revenue] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: 64f71f97-6278-4b1d-9acb-60790a3c3921
+
+	measure '_05 CF_△PY% Total Revenue' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PY% Total Revenue] > 0, "#6A994E",
+			    [_04 △PY% Total Revenue] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: b45637af-6d34-46e8-a066-f5c226b65958
+
+	measure '_01 AC Total Revenue (DayNum)' = ```
+			
+			SUMX(
+			    VALUES(Dates[Day]),  -- Ensures daynum remain visible
+			    VAR TransactionsAC = COALESCE([_01 Total Revenue], 0)
+			    RETURN 
+			        TransactionsAC  -- Keeps 0 values visible
+			)
+				
+			
+			```
+		formatString: 0
+		lineageTag: d734e8fb-20a0-49a9-b952-00e92532deab
+
+	measure '_01 Total Profit' = ```
+			SUM(vw_fact_sales[profit])
+				
+			
+			```
+		formatString: 0
+		lineageTag: c151d538-a9a9-4893-a5c3-c6bf7358f269
+
+	measure '_02 PY Total Profit' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Profit],
+			        SAMEPERIODLASTYEAR(Dates[Date])
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 66b7df34-6d4b-4284-ba8c-73987770e004
+
+	measure '_02 PM Total Profit' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Profit],
+			        DATEADD(Dates[Date],-1,MONTH)
+			    ),
+			    BLANK()
+			)
+				
+			
+			```
+		formatString: 0
+		lineageTag: 3c026226-3783-4b07-936a-6dd8f215f402
+
+	measure '_03 △PY Total Profit' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]) 
+			    && NOT(ISBLANK([_02 PY Total Profit])) 
+			    && NOT(ISBLANK([_01 Total Profit])) 
+			    && [_01 Total Profit] <> 0,
+			    [_01 Total Profit] - [_02 PY Total Profit],
+			    BLANK()
+			)
+				
+			
+			```
+		formatString: 0
+		lineageTag: 03a515c6-9f2b-44f0-92c4-3e957a001780
+
+	measure '_04 △PM% Total Profit' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Profit]) || [_01 Total Profit] = 0,
+			    "--",
+			    DIVIDE([_01 Total Profit] - [_02 PM Total Profit], [_02 PM Total Profit], 0)
+			)
+				
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c8c6a145-eb68-4b76-8a41-db460e93abab
+
+	measure '_04 △PY% Total Profit' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Profit]) || [_01 Total Profit] = 0,
+			    "--",
+			    DIVIDE([_01 Total Profit] - [_02 PY Total Profit], [_02 PY Total Profit], 0)
+			)
+				
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 9ea5a3cb-9615-4593-92df-b3176245d313
+
+	measure '_05 CF_△PM% Total Profit' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PM% Total Profit] > 0, "#6A994E",
+			    [_04 △PM% Total Profit] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: 1bb90a21-43da-4e82-bf8b-7112038de4b0
+
+	measure '_05 CF_△PY% Total Profit' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PY% Total Profit] > 0, "#6A994E",
+			    [_04 △PY% Total Profit] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: a99a31b7-5b70-4485-a977-9657dec17b03
+
+	measure '_01 AC Total Profit (DayNum)' = ```
+			
+			SUMX(
+			    VALUES(Dates[Day]),  -- Ensures daynum remain visible
+			    VAR TransactionsAC = COALESCE([_01 Total Profit], 0)
+			    RETURN 
+			        TransactionsAC  -- Keeps 0 values visible
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: aa7cf45d-5e75-4c5b-9185-e75557c34dd0
+
+	measure '_01 Total Quantity' = ```
+			SUM(vw_fact_sales[quantity])
+			
+			
+			```
+		formatString: 0
+		lineageTag: c94fa04c-12d8-4ecf-b243-1efa58bc2751
+
+	measure '_02 PY Total Quantity' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Quantity],
+			        SAMEPERIODLASTYEAR(Dates[Date])
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: c704ce53-f05b-460d-8ab4-656dd607f971
+
+	measure '_02 PM Total Quantity' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Quantity],
+			        DATEADD(Dates[Date],-1,MONTH)
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 7625c05a-87a7-45d6-b700-e5d9594c2ffd
+
+	measure '_03 △PY Total Quantity' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]) 
+			    && NOT(ISBLANK([_02 PY Total Quantity])) 
+			    && NOT(ISBLANK([_01 Total Quantity])) 
+			    && [_01 Total Quantity] <> 0,
+			    [_01 Total Quantity] - [_02 PY Total Quantity],
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 19e6e3c8-573a-4be0-bb2e-1d53cae2ecb9
+
+	measure '_04 △PM% Total Quantity' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Quantity]) || [_01 Total Quantity] = 0,
+			    "--",
+			    DIVIDE([_01 Total Quantity] - [_02 PM Total Quantity], [_02 PM Total Quantity], 0)
+			)
+			
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 3b2d875f-4218-42c7-a622-e755f1c82688
+
+	measure '_04 △PY% Total Quantity' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Quantity]) || [_01 Total Quantity] = 0,
+			    "--",
+			    DIVIDE([_01 Total Quantity] - [_02 PY Total Quantity], [_02 PY Total Quantity], 0)
+			)
+			
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 4df7b475-f1b9-45a0-a799-963d302aba3e
+
+	measure '_05 CF_△PY% Total Quantity' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PY% Total Quantity] > 0, "#6A994E",
+			    [_04 △PY% Total Quantity] = 0, "#808080",
+			    "#BC4749"
+			)
+			
+			
+			```
+		lineageTag: 0df33c64-746c-4560-8930-1e39ae250004
+
+	measure '_05 CF_△PM% Total Quantity' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PM% Total Quantity] > 0, "#6A994E",
+			    [_04 △PM% Total Quantity] = 0, "#808080",
+			    "#BC4749"
+			)
+			
+			
+			```
+		lineageTag: d1ac700a-5e6b-42d6-a5df-2c69ade27357
+
+	measure '_01 AC Total Quantity (DayNum)' = ```
+			
+			SUMX(
+			    VALUES(Dates[Day]),  -- Ensures daynum remain visible
+			    VAR TransactionsAC = COALESCE([_01 Total Quantity], 0)
+			    RETURN 
+			        TransactionsAC  -- Keeps 0 values visible
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 2e4a7841-f6bd-4b37-b059-db9cd4e3ed71
+
+	measure '_01 Max_Dynamic Selected Metric (DayNum)' = ```
+			
+			VAR max_val = 
+			MAXX(
+			    ALLSELECTED(Dates[Day]),
+			    [_01 Dynamic Selected Metric (based on selected Metric card - DayNum)]
+			)
+			VAR check = IF(max_val = [_01 Dynamic Selected Metric (based on selected Metric card - DayNum)], max_val, BLANK() )
+			RETURN
+			check
+			
+			
+			```
+		lineageTag: fef7341d-ac1b-43d8-a205-80c5f9ceaf36
+
+	measure '_01 Max_Dynamic Selected Metric (DayNum) - Dummy' = ```
+			[_01 Max_Dynamic Selected Metric (DayNum)]
+			
+			
+			```
+		formatString: 0
+		lineageTag: d2a1e691-1f12-433a-8290-3992f3671031
+
+	measure Baseline = ```
+			0
+			
+			
+			```
+		formatString: 0
+		lineageTag: d47ed9f3-281f-4dfd-9c99-c53170c5077b
+
+	measure '_01 SVG Bar Chart_Total Transactions (based on selected dimension)' = ```
+			
+			VAR SelectedDimension = 
+			    SWITCH(
+			        TRUE(),
+			        ISINSCOPE('vw_dim_customers'[customer_id]), "Customer",
+			        ISINSCOPE('vw_dim_products'[product_id]), "Product",
+			        "None"
+			    )
+			
+			VAR IsTotal = 
+			    SWITCH(
+			        SelectedDimension,
+			        "Customer", ISINSCOPE('vw_dim_customers'[customer_id]) = FALSE,
+			        "Product", ISINSCOPE('vw_dim_products'[product_id]) = FALSE,
+			        TRUE()
+			    )
+			
+			VAR MaxTransaction = CALCULATE(
+			    MAXX(ALL(vw_fact_sales), [_01 Total Transactions])
+			)
+			
+			VAR Bar_Value = [_01 Total Transactions]
+			VAR NormalizedValue = DIVIDE(Bar_Value, MaxTransaction)
+			VAR Bar_Fill = NormalizedValue * 10
+			
+			VAR SVG_Data_URL = "data:image/svg+xml;utf8,"
+			VAR SVG_Start = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 175 20'>"
+			VAR SVG_Data = "<rect fill='#024AB2' x='0' y='0' width='" & Bar_Fill & "' height='20' />"
+			VAR SVG_End = "</svg>"
+			
+			RETURN
+			IF(
+			    IsTotal || SelectedDimension = "None",
+			    BLANK(),
+			    SVG_Data_URL & SVG_Start & SVG_Data & SVG_End
+			)
+			
+			```
+		lineageTag: 81634495-6d45-4e30-9b2a-70944609e8b8
+		dataCategory: ImageUrl
+
+	measure '_03 SVG Bar Chart_Total Order Value (based on selected dimension)' = ```
+			
+			VAR SelectedDimension = 
+			    SWITCH(
+			        TRUE(),
+			        ISINSCOPE('vw_dim_customers'[customer_id]), "Customer",
+			        ISINSCOPE('vw_dim_products'[product_id]), "Product",
+			        "None"
+			    )
+			
+			VAR IsTotal = 
+			    SWITCH(
+			        SelectedDimension,
+			        "Customer", ISINSCOPE('vw_dim_customers'[customer_id]) = FALSE,
+			        "Product", ISINSCOPE('vw_dim_products'[product_id]) = FALSE,
+			        TRUE()
+			    )
+			
+			VAR MaxRevenue = CALCULATE(
+			    MAXX(ALL(vw_fact_sales), [_01 Total Revenue])
+			)
+			
+			VAR Bar_Value = [_01 Total Revenue]
+			VAR NormalizedValue = DIVIDE(Bar_Value, MaxRevenue)
+			VAR Bar_Fill = NormalizedValue * 200
+			
+			VAR SVG_Data_URL = "data:image/svg+xml;utf8,"
+			VAR SVG_Start = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 175 20'>"
+			VAR SVG_Data = "<rect fill='#024AB2' x='0' y='0' width='" & Bar_Fill & "' height='20' />"
+			VAR SVG_End = "</svg>"
+			
+			RETURN
+			IF(
+			    IsTotal || SelectedDimension = "None",
+			    BLANK(),
+			    SVG_Data_URL & SVG_Start & SVG_Data & SVG_End
+			)
+			
+			```
+		lineageTag: 2a624330-f3ab-47c0-b5d8-7411f69ced60
+		dataCategory: ImageUrl
+
+	measure '_01 Dynamic Selected Metric (based on selected metric card - DayNum)' = ```
+			
+			VAR _SelectedMetricOrder = SELECTEDVALUE('PMetric'[PMetric Order])
+			RETURN
+			    SWITCH(
+			        _SelectedMetricOrder,
+			        0, [_01 AC Total Profit (DayNum)],
+			        1, [_01 AC Total Quantity (DayNum)],
+			        2, [_01 AC Total Revenue (DayNum)],
+			        3, [_01 AC Total Transactions (DayNum)],
+			        BLANK()
+			    )
+			
+			
+			```
+		formatString: 0
+		lineageTag: 2281bfc9-8adc-4cd0-aaff-72211b45eda0
+
+	measure '_01 Dynamic Selected Line Chart Title (based on selected metric)' = ```
+			
+			VAR _SelectedVariableOrder = SELECTEDVALUE('PMetric'[PMetric Order])
+			
+			RETURN
+			SWITCH(
+			    _SelectedVariableOrder,
+			    
+			    -- Transaction Metrics
+			    0, "Daily Profit Trends",
+			    
+			    -- Revenue Metrics  
+			    1, "Daily Quantity Trends",
+			    
+			    -- Profit Metrics
+			    2, "Daily Revenue Trends",
+			
+			    -- Quantity Metrics
+			    3, "Daily Transaction Trends",
+			    
+			    -- Default when no selection
+			    "Daily Trends"
+			)
+			
+			
+			```
+		lineageTag: 4e07a961-11df-4bfc-b805-8446cec9fcfc
+
+	measure 'Y-Axis Max_Dynamic Selected Metric (DayNum)' = ```
+			
+			VAR _SelectedMetric = SELECTEDVALUE(PMetric[PMetric Order])
+			VAR _HighestValue =
+			    SWITCH(
+			        _SelectedMetric,
+			        // Transaction Metrics
+			        0, MAXX(ALLSELECTED('Dates'[Day]), [_01 Total Profit]),
+			
+			        // Revenue Metrics
+			        1, MAXX(ALLSELECTED('Dates'[Day]), [_01 Total Quantity]),
+			
+			        // Profit Metrics
+			        2, MAXX(ALLSELECTED('Dates'[Day]), [_01 Total Revenue]),
+			
+			        // Quantity Metrics
+			        3, MAXX(ALLSELECTED('Dates'[Day]), [_01 Total Transactions]),
+			
+			        // Default when no selection
+			        BLANK()
+			    )
+			RETURN
+			    IF(
+			        NOT ISBLANK(_HighestValue),
+			        _HighestValue * 1.5
+			    )
+			
+			
+			```
+		lineageTag: ed5ffd93-d0ce-41c7-85f9-2b641919dd10
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '_01 Dynamic Selected Metric (based on selected metric card)' = ```
+			
+			VAR _SelectedMetricOrder = SELECTEDVALUE('PMetric'[PMetric Order])
+			RETURN
+			    SWITCH(
+			        _SelectedMetricOrder,
+			        0, [_01 Total Profit],
+			        1, [_01 Total Quantity],
+			        2, [_01 Total Revenue],
+			        3, [_01 Total Transactions],
+			        BLANK()
+			    )
+			
+			
+			```
+		formatString: 0
+		lineageTag: 34065aea-f155-4959-a59d-ff5594d5ba09
+
+	measure '_01 Dynamic Selected Table Subtitle (based on selected metric card - for showing top 5 states)' = ```
+			
+			VAR _SelectedVariableOrder = SELECTEDVALUE('PMetric'[PMetric Order])
+			
+			RETURN
+			SWITCH(
+			    _SelectedVariableOrder,
+			    
+			    -- Transaction Metrics
+			    0, "by Total Transactions",
+			    
+			    -- Revenue Metrics  
+			    1, "by Total Revenue",
+			    
+			    -- Profit Metrics
+			    2, "by Total Profit",
+			
+			    -- Quantity Metrics
+			    3, "by Total Quantity",
+			    
+			    -- Default when no selection
+			    ""
+			)
+			
+			
+			```
+		lineageTag: 27ddf2fa-c25d-4c0e-a106-1f16e09a052c
+
+	measure '_03 Dynamic Selected Dimension Name (based on selected dimension ID)' = ```
+			
+			VAR _SelectedVariableOrder = SELECTEDVALUE('PDimensionID'[PDimensionID Order])
+			RETURN
+			    SWITCH(
+			        _SelectedVariableOrder,
+			        0, SELECTEDVALUE(vw_dim_customers[last_name]),    -- Show selected customer name
+			        1, SELECTEDVALUE(vw_dim_products[product_name]),      -- Show selected product name
+			        BLANK()
+			    )
+			
+			```
+		lineageTag: a03ccf08-6784-41c7-adca-4d8e1a2d754a
+
+	measure '_01 Dynamic Selected Paginated Table Title (based on selected dimension)' = ```
+			
+			VAR _SelectedVariableOrder = SELECTEDVALUE('PDimensionID'[PDimensionID Order])
+			
+			RETURN
+			SWITCH(
+			    _SelectedVariableOrder,
+			    
+			    -- Dimension: Customer
+			    0, "Customer Order Summary",
+			    
+			    -- Dimension: Product 
+			    1, "Product Order Summary",
+			    
+			    -- Default when no selection
+			    "Daily Trends"
+			)
+			
+			```
+		lineageTag: 450d1848-3822-46bf-a964-53fdb5acc8e2
+
+	column Value
+		formatString: 0
+		lineageTag: c29ff91c-d3da-4b95-9390-3b939ae3313d
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _measures = calculated
+		mode: import
+		source = {1}
+
+	annotation PBI_Id = 5a9c28d306324f1189fec604a2a27e83
+

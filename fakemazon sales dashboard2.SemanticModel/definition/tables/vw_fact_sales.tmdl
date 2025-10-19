@@ -1,0 +1,129 @@
+table vw_fact_sales
+	lineageTag: da6e53b2-df67-4a30-9918-66befd0a8553
+
+	column order_number
+		dataType: string
+		lineageTag: 52d6e885-e15f-43ee-a945-9c1a8dbb6463
+		summarizeBy: none
+		sourceColumn: order_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 8d915aa6-d7fd-4c4e-b0e6-38803644eeb6
+		summarizeBy: none
+		sourceColumn: product_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 325f978c-2757-4661-b1d7-ca7c7e9841c7
+		summarizeBy: none
+		sourceColumn: customer_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: fbc53bf5-66b9-497f-8a9f-7d3f8022efb5
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column shipping_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: fcb66b01-51a3-4fe3-bef9-567542a16eee
+		summarizeBy: none
+		sourceColumn: shipping_date
+
+		variation Variation
+			isDefault
+			relationship: 5abe6939-efc0-4a5b-b1bb-a2f2bea14aa7
+			defaultHierarchy: LocalDateTable_20df98af-1791-450e-ab76-052680c06ee8.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column due_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: be0be0e2-044f-4798-9107-8a652bf00b8a
+		summarizeBy: none
+		sourceColumn: due_date
+
+		variation Variation
+			isDefault
+			relationship: 6856a1d0-7ec3-4d1a-872c-af216dd3d520
+			defaultHierarchy: LocalDateTable_a90ea938-2d69-4910-ab95-c5e6cfb6e869.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: ffdc9fd4-9a9d-4aee-a1d9-00af2bcbfa53
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column price
+		dataType: int64
+		formatString: 0
+		lineageTag: 9ac16713-81a4-44c2-ae37-43341ed5da27
+		summarizeBy: sum
+		sourceColumn: price
+
+		annotation SummarizationSetBy = Automatic
+
+	column revenue
+		dataType: int64
+		formatString: 0
+		lineageTag: df0d3c72-9be8-41d1-8a9f-12b022ada371
+		summarizeBy: sum
+		sourceColumn: revenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column COGS
+		dataType: int64
+		formatString: 0
+		lineageTag: 02926034-fde9-442f-a66f-e64a0e34c0fd
+		summarizeBy: sum
+		sourceColumn: COGS
+
+		annotation SummarizationSetBy = Automatic
+
+	column profit
+		dataType: int64
+		formatString: 0
+		lineageTag: 5b3764e7-85ba-48f0-aa98-748e5af3ed0f
+		summarizeBy: sum
+		sourceColumn: profit
+
+		annotation SummarizationSetBy = Automatic
+
+	partition vw_fact_sales = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Databases("xt5ytmuaefdudosvbltiljpkaq-cmr3fg4zzi2ufphqc3hsobhbei.datawarehouse.fabric.microsoft.com"),
+				    Baraa_WH = Source{[Name="Baraa_WH"]}[Data],
+				    dbo_vw_fact_sales = Baraa_WH{[Schema="dbo",Item="vw_fact_sales"]}[Data]
+				in
+				    dbo_vw_fact_sales
+
+	annotation PBI_ResultType = Exception
+

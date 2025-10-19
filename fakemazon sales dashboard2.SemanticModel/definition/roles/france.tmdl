@@ -1,0 +1,7 @@
+role france
+	modelPermission: read
+
+	tablePermission vw_dim_customers = [country] == "France"
+
+	annotation PBI_Id = ce84d54a36e8485daa9e5026679e0bba
+

@@ -1,0 +1,34 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-GB
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["vw_dim_customers","Dates","vw_fact_sales","vw_dim_products"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DaxQueryView_Desktop"]
+
+ref table vw_dim_customers
+ref table DateTableTemplate_834b01e5-96d7-4df6-a4ef-c8a635eb7941
+ref table LocalDateTable_abf004e5-5776-4111-9ff5-53d2dfacab03
+ref table LocalDateTable_a5665f50-eb92-45dd-b9a8-73ab9aced06a
+ref table Dates
+ref table LocalDateTable_215187c7-2f11-4519-ba0a-6c9060ab2b22
+ref table vw_fact_sales
+ref table LocalDateTable_20df98af-1791-450e-ab76-052680c06ee8
+ref table LocalDateTable_a90ea938-2d69-4910-ab95-c5e6cfb6e869
+ref table vw_dim_products
+ref table LocalDateTable_12576fab-887b-4578-a9dd-478775d82d8a
+ref table _measures
+ref table PMetric
+ref table PDimensionID
+
+ref role france
+ref role 'All access'
+
+ref cultureInfo en-US
+

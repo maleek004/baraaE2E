@@ -1,0 +1,42 @@
+relationship d4a7a75e-6a9b-43b4-883b-87dc50835a51
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_dim_customers.birthdate
+	toColumn: LocalDateTable_abf004e5-5776-4111-9ff5-53d2dfacab03.Date
+
+relationship e73705b0-6c72-453b-993d-c2cd39e7c201
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_dim_customers.create_date
+	toColumn: LocalDateTable_a5665f50-eb92-45dd-b9a8-73ab9aced06a.Date
+
+relationship c85f8295-24ba-404f-96f5-fe916384868e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Dates.Date
+	toColumn: LocalDateTable_215187c7-2f11-4519-ba0a-6c9060ab2b22.Date
+
+relationship 5abe6939-efc0-4a5b-b1bb-a2f2bea14aa7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_fact_sales.shipping_date
+	toColumn: LocalDateTable_20df98af-1791-450e-ab76-052680c06ee8.Date
+
+relationship 6856a1d0-7ec3-4d1a-872c-af216dd3d520
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_fact_sales.due_date
+	toColumn: LocalDateTable_a90ea938-2d69-4910-ab95-c5e6cfb6e869.Date
+
+relationship e53638e4-f68a-4382-89d8-446860b68701
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_dim_products.start_date
+	toColumn: LocalDateTable_12576fab-887b-4578-a9dd-478775d82d8a.Date
+
+relationship AutoDetected_0db54abf-8001-4367-9697-89db623611b1
+	fromColumn: vw_fact_sales.customer_key
+	toColumn: vw_dim_customers.customer_key
+
+relationship AutoDetected_2010f822-f61a-4c1a-b71c-e083f66bd86a
+	fromColumn: vw_fact_sales.product_key
+	toColumn: vw_dim_products.product_key
+
+relationship 3dc671b6-e3f1-df0b-ef69-4f645c126682
+	fromColumn: vw_fact_sales.order_date
+	toColumn: Dates.Date
+

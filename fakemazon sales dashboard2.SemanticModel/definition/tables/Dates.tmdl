@@ -1,0 +1,119 @@
+table Dates
+	lineageTag: 577e2533-84d3-492c-99c3-374068299f03
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b6a101b9-81d3-4638-a567-a5ec5a2ed613
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: c85f8295-24ba-404f-96f5-fe916384868e
+			defaultHierarchy: LocalDateTable_215187c7-2f11-4519-ba0a-6c9060ab2b22.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Day
+		dataType: int64
+		formatString: 0
+		lineageTag: a0a3aac4-ff99-4bd8-9d1d-16da48ffa60f
+		summarizeBy: sum
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 8ff9d8a5-6645-4c58-a450-4569fa5788df
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_Num
+		dataType: int64
+		formatString: 0
+		lineageTag: 2b8ac6bf-0ce8-417d-abad-e7969128004f
+		summarizeBy: sum
+		sourceColumn: Month_Num
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_Short
+		dataType: string
+		lineageTag: 4234c380-c36c-44f1-bc1e-c0a10d1bfb52
+		summarizeBy: none
+		sourceColumn: Month_Short
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: string
+		lineageTag: 14e95a38-85bc-4a49-a0b1-b9c727e95120
+		summarizeBy: none
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weekday
+		dataType: int64
+		formatString: 0
+		lineageTag: b58b91af-f72d-405d-b04e-d6aaaf60cbd4
+		summarizeBy: sum
+		sourceColumn: Weekday
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day_of_Week
+		dataType: string
+		lineageTag: 19f4ee51-1c05-4dbb-85cc-de353413dcd9
+		summarizeBy: none
+		sourceColumn: Day_of_Week
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: c5282d45-c5e9-417f-a02e-66f853afda90
+		summarizeBy: sum
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year_Month
+		dataType: string
+		lineageTag: 7d7563bc-5406-46d1-83b3-a4b66d4fc494
+		summarizeBy: none
+		sourceColumn: Year_Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_Year
+		dataType: string
+		lineageTag: ad5bdc86-62b1-4314-b96e-cb11af743307
+		summarizeBy: none
+		sourceColumn: Month_Year
+		sortByColumn: Year_Month
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dates = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Databases("xt5ytmuaefdudosvbltiljpkaq-cmr3fg4zzi2ufphqc3hsobhbei.datawarehouse.fabric.microsoft.com"),
+				    Baraa_WH = Source{[Name="Baraa_WH"]}[Data],
+				    dbo_Dates = Baraa_WH{[Schema="dbo",Item="Dates"]}[Data]
+				in
+				    dbo_Dates
+
+	annotation PBI_ResultType = Table
+
