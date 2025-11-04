@@ -1,0 +1,26 @@
+model Model
+	culture: en-US
+	collation: Latin1_General_100_BIN2_UTF8
+	defaultPowerBIDataSourceVersion: powerBI_V3
+
+annotation _measures =
+		EVALUATE
+		{1}
+
+annotation PBI_ProTooling = ["SLL_UpdateDLConnection_SQL", "SLL", "SLL_DirectLakeMigration"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["DatabaseQuery"]
+
+ref table vw_dim_customers
+ref table Dates
+ref table vw_fact_sales
+ref table vw_dim_products
+ref table _measures
+ref table PMetric
+ref table PDimensionID
+
+ref role france
+ref role 'All access'
+

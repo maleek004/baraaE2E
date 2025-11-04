@@ -5,7 +5,7 @@
 -- Create Dimension: gold.dim_customers
 -- =============================================================================
 
-CREATE   VIEW dbo.vw_dim_customers AS
+CREATE   VIEW dbo.vw_dim_customers3 AS
 SELECT
     ROW_NUMBER() OVER (ORDER BY cst_id) AS customer_key, -- Surrogate key
     ci.cst_id                          AS customer_id,

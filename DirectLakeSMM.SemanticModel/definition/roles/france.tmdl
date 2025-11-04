@@ -1,0 +1,5 @@
+role france
+	modelPermission: read
+
+	tablePermission vw_dim_customers = [country] == "France"
+

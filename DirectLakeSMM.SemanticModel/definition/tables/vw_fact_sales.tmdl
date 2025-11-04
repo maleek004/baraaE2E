@@ -1,0 +1,86 @@
+table vw_fact_sales
+	lineageTag: 74274ae9-3582-4cc9-8b77-89814eddc830
+	sourceLineageTag: [dbo].[vw_fact_sales]
+
+	column order_number
+		dataType: string
+		lineageTag: 73cbcece-c62b-4dee-9db7-e52af61caa91
+		summarizeBy: none
+		sourceColumn: order_number
+
+	column product_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c63e777d-8d97-42ae-98c5-f057db8ccf0c
+		summarizeBy: none
+		sourceColumn: product_key
+
+	column customer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 519911d5-93b0-4adb-9283-584072481a3a
+		summarizeBy: none
+		sourceColumn: customer_key
+
+	column order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: caddc17f-3697-41c6-b0df-5aa8ee65dc68
+		summarizeBy: none
+		sourceColumn: order_date
+
+	column shipping_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6d98fbf2-4022-4db1-91db-24f8d6bb2e22
+		summarizeBy: none
+		sourceColumn: shipping_date
+
+	column due_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 35c5c82e-789e-48bb-a723-5c02aad615b8
+		summarizeBy: none
+		sourceColumn: due_date
+
+	column quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 93402e40-b4ab-401c-b439-4c99d1b2613e
+		summarizeBy: sum
+		sourceColumn: quantity
+
+	column price
+		dataType: int64
+		formatString: 0
+		lineageTag: e6c6f3b1-07bb-4231-9899-1fe7cbd8916b
+		summarizeBy: sum
+		sourceColumn: price
+
+	column revenue
+		dataType: int64
+		formatString: 0
+		lineageTag: 266a1a9c-cfee-4653-9553-9d75e010fbd2
+		summarizeBy: sum
+		sourceColumn: revenue
+
+	column COGS
+		dataType: int64
+		formatString: 0
+		lineageTag: 4e7b9e91-7909-4f71-b428-8fb7bd03f0a7
+		summarizeBy: sum
+		sourceColumn: COGS
+
+	column profit
+		dataType: int64
+		formatString: 0
+		lineageTag: e7da92c6-b495-4b48-a192-2674dab13b6b
+		summarizeBy: sum
+		sourceColumn: profit
+
+	partition vw_fact_sales = entity
+		mode: directLake
+		source
+			entityName: vw_fact_sales
+			expressionSource: DatabaseQuery
+

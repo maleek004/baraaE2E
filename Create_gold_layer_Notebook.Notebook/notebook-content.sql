@@ -23,6 +23,16 @@
 -- META   }
 -- META }
 
+-- PARAMETERS CELL ********************
+
+
+-- METADATA ********************
+
+-- META {
+-- META   "language": "sql",
+-- META   "language_group": "sqldatawarehouse"
+-- META }
+
 -- MARKDOWN ********************
 
 -- 

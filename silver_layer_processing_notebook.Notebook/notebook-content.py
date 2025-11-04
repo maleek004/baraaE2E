@@ -9,12 +9,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "3a15daa0-1517-4964-82d7-ea00507b8389",
-# META       "default_lakehouse_name": "Baraa_LH",
+# META       "default_lakehouse": "a48b4024-fefe-4485-8f27-037b991e16f8",
+# META       "default_lakehouse_name": "Baraa_LH6",
 # META       "default_lakehouse_workspace_id": "9bb22313-ca99-4235-bcf0-16cf2704e122",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "3a15daa0-1517-4964-82d7-ea00507b8389"
+# META           "id": "a48b4024-fefe-4485-8f27-037b991e16f8"
 # META         }
 # META       ]
 # META     }
@@ -176,9 +176,7 @@ def transform_crm_cust_info(df):
     print(f"Before: {df['cst_id'].isnull().sum()} null cst_id(s)")
     print(f"Before: {df.duplicated(subset='cst_id').sum()} duplicate cst_id(s)")
 
-    df = df.dropna(subset=['cst_id'])\
-           .sort_values("cst_create_date", ascending=False)\
-           .drop_duplicates(subset="cst_id", keep="first")
+    df = df.dropna(subset=['cst_id']).sort_values("cst_create_date", ascending=False).drop_duplicates(subset="cst_id", keep="first")
 
     print(f"After: {df['cst_id'].isnull().sum()} null cst_id(s)")
     print(f"After: {df.duplicated(subset='cst_id').sum()} duplicate cst_id(s)")
@@ -269,16 +267,18 @@ def transform_crm_prd_info(crm_prd_info):
 
     # Standardizing the prd_line column
     print("\nStandardizing values in 'prd_line' column...........\nUnique values before standardization:", crm_prd_info["prd_line"].unique())
-    crm_prd_info["prd_line"] = crm_prd_info["prd_line"]\
-        .astype(str)\
-        .str.upper()\
-        .map({
-            "M ": "Mountain",
-            "R ": "Roads",
-            "S ": "other sales",
-            "T ": "Touring"
-        })\
-        .fillna("n/a")
+    crm_prd_info["prd_line"] = (
+    crm_prd_info["prd_line"]
+    .astype(str)
+    .str.upper()
+    .map({
+        "M ": "Mountain",
+        "R ": "Roads",
+        "S ": "other sales",
+        "T ": "Touring"
+    })
+    .fillna("n/a")
+    )
     print("Unique values after standardization:", crm_prd_info["prd_line"].unique())
 
     # Recreating the prd_end_dt column to fix errors
@@ -910,131 +910,4 @@ load_tables()
 # META {
 # META   "language": "python",
 # META   "language_group": "jupyter_python"
-# META }
-
-# MARKDOWN ********************
-
-# ## Shelved codes
-
-# CELL ********************
-
-#============ Dynamically Add cities to the erp_loc_a101 dataset
-# Shelve reason:  The results were not skewed enough making it un realistic 
-
-%pip install pycountry faker
-
-import pycountry
-from faker import Faker
-
-# Function to safely initialize a Faker locale
-def initialize_faker_locale(country_name):
-    try:
-        country = pycountry.countries.get(name=country_name)
-        if not country:
-            return Faker()  # fallback to default locale
-        locale_code = f"en_{country.alpha_2}"  # e.g. en_US, en_GB
-        try:
-            return Faker(locale_code)
-        except:
-            return Faker()  # fallback if locale not supported
-    except:
-        return Faker()
-
-# Create a dictionary of faker instances for each unique country in the dataset
-faker_locals = {country: initialize_faker_locale(country) for country in erp_loc_a101['cntry'].unique()}
-
-# Add a city column by using the mapped faker generator
-erp_loc_a101["city"] = erp_loc_a101["cntry"].apply(lambda x: faker_locals[x].city())
-erp_loc_a101
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "jupyter_python",
-# META   "frozen": true,
-# META   "editable": false
-# META }
-
-# CELL ********************
-
-#======= trying to get the alpha_2 code for each country in the dataset which i could then use to get the sundivisions under te country 
-for country in erp_loc_a101['cntry'].unique():
-    cntry = pycountry.countries.get(name=country)
-    print(f"\n {cntry}")
-
-#============= Trying to get the subdivisions in a country 
-import pycountry
-
-def get_country_states(country_code):
-    """
-    Returns a list of all states/subdivisions for a given country code.
-    :param country_code: The two-letter ISO 3166-1 alpha-2 country code (e.g., 'US', 'CA', 'DE').
-    :return: A list of subdivision objects.
-    """
-    try:
-        # Filter all subdivisions by the country code
-        subdivisions = pycountry.subdivisions.get(country_code=country_code)
-        
-        # Return a list of the subdivision names and codes
-        return [(sub.name, sub.code) for sub in subdivisions]
-    except KeyError:
-        return f"Country code '{country_code}' not found."
-
-# Example for the United States
-us_states = get_country_states('US')
-print(f"States in the United States ({len(us_states)} total):")
-for name, code in us_states:
-    print(f"{name} ({code})")
-
-print("-" * 30)
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "jupyter_python",
-# META   "frozen": true,
-# META   "editable": false
-# META }
-
-# CELL ********************
-
-def create_dim_date(start_date: str, end_date: str) -> pl.DataFrame:
-    # Convert to datetime objects
-    start = datetime.strptime(start_date, "%Y-%m-%d")
-    end = datetime.strptime(end_date, "%Y-%m-%d")
-    
-    # Generate date range
-    dates = pl.date_range(start=start, end=end, interval="1d", eager=True)
-    
-    # Build DataFrame
-    df = pl.DataFrame({
-        "Date": dates
-    }).with_columns([
-        pl.col("Date").dt.year().alias("Year"),
-        pl.col("Date").dt.month().alias("Month"),
-        pl.col("Date").dt.day().alias("Day"),
-        pl.col("Date").dt.weekday().alias("Weekday"), # 0=Mon, 6=Sun
-        (pl.col("Date").dt.weekday() >= 5).alias("IsWeekend"),  # True if Saturday or Sunday
-        pl.col("Date").dt.strftime("%B").alias("MonthName"),
-        pl.col("Date").dt.strftime("%A").alias("DayName"),
-        pl.col("Date").dt.iso_year().alias("ISO_Year"),
-        pl.col("Date").dt.week().alias("WeekOfYear"),
-        pl.col("Date").dt.quarter().alias("Quarter"),
-    ])
-    
-    return df
-
-dim_date = create_dim_date(start_date, end_date)
-dim_date
-
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "jupyter_python",
-# META   "frozen": true,
-# META   "editable": false
 # META }

@@ -1,0 +1,80 @@
+table vw_dim_customers
+	lineageTag: 1f3acd17-5191-4230-8d9a-23e1ccb314b3
+	sourceLineageTag: [dbo].[vw_dim_customers]
+
+	column customer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 8bb2386e-f6d3-4a9a-abd8-489fd4e54b9c
+		summarizeBy: none
+		sourceColumn: customer_key
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0f0f04c8-f439-41a8-9987-5d8869ed6993
+		summarizeBy: sum
+		sourceColumn: customer_id
+
+	column customer_number
+		dataType: string
+		lineageTag: d8a7cd2c-d70c-404c-9cdf-f077427fe79b
+		summarizeBy: none
+		sourceColumn: customer_number
+
+	column first_name
+		dataType: string
+		lineageTag: 4df5fbb1-be04-4706-b7dd-fe6ea55d0b1d
+		summarizeBy: none
+		sourceColumn: first_name
+
+	column last_name
+		dataType: string
+		lineageTag: 335b476d-947e-40c4-b0d0-340a9f2aaafe
+		summarizeBy: none
+		sourceColumn: last_name
+
+	column country
+		dataType: string
+		lineageTag: cc467dac-7c99-4e16-982e-cf97287584bd
+		summarizeBy: none
+		sourceColumn: country
+
+	column city
+		dataType: string
+		lineageTag: 7007687e-85f4-42ae-b8fd-05f2c2d4aad0
+		summarizeBy: none
+		sourceColumn: city
+
+	column marital_status
+		dataType: string
+		lineageTag: fff5444c-88c9-42f3-a8d4-d99a23622243
+		summarizeBy: none
+		sourceColumn: marital_status
+
+	column gender
+		dataType: string
+		lineageTag: e48ca6f7-44a0-45c8-bc27-921aea23e532
+		summarizeBy: none
+		sourceColumn: gender
+
+	column birthdate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0cd994cb-3bbd-4f88-a52c-898b11f45e0d
+		summarizeBy: none
+		sourceColumn: birthdate
+
+	column create_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 41aca197-9394-4fb4-9726-9719169706ff
+		summarizeBy: none
+		sourceColumn: create_date
+
+	partition vw_dim_customers = entity
+		mode: directLake
+		source
+			entityName: vw_dim_customers
+			expressionSource: DatabaseQuery
+
