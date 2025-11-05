@@ -56,7 +56,7 @@ import sempy_labs.report as rep
 
 dataset_name = 'fakemazon sales dashboard2' #Enter the import/DQ semantic model name
 workspace_name = None #Enter the workspace of the import/DQ semantic model. It set to none it will use the current workspace.
-new_dataset_name = 'DirectLakeSMM' #Enter the new Direct Lake semantic model name
+new_dataset_name = 'DirectLakeSMM2' #Enter the new Direct Lake semantic model name
 new_dataset_workspace_name = None #Enter the workspace where the Direct Lake model will be created. If set to None it will use the current workspace.
 lakehouse_name =None #'Directlake_LH' #'Baraa_LH' #Enter the lakehouse to be used for the Direct Lake model. If set to None it will use the lakehouse attached to the notebook.
 lakehouse_workspace_name = None #Enter the lakehouse workspace. If set to None it will use the new_dataset_workspace_name.
