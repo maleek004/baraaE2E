@@ -1,3 +1,0 @@
-role 'All access'
-	modelPermission: read
-

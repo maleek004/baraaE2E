@@ -3,7 +3,7 @@
   "version": "4.0",
   "datasetReference": {
     "byPath": {
-      "path": "../DirectLakeSMM.SemanticModel"
+      "path": "../fakemazon sales dashboard2.SemanticModel"
     }
   }
 }

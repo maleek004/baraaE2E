@@ -18,5 +18,3 @@ ref table vw_dim_products
 ref table vw_fact_sales
 ref table Dates
 
-ref cultureInfo en-US
-

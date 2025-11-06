@@ -1,0 +1,127 @@
+table vw_dim_customers
+	lineageTag: acde105c-169e-4861-9f95-c8663fe90adb
+	sourceLineageTag: [dbo].[vw_dim_customers]
+
+	column city
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: bf3dc2a3-a8e0-4769-a75f-1fc87f28a15c
+		sourceLineageTag: city
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column marital_status
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 0fbc663d-7b54-48f0-a81a-5daa48b953c6
+		sourceLineageTag: marital_status
+		summarizeBy: none
+		sourceColumn: marital_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column gender
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 776d5594-1ec2-41e4-ae0e-25cf1d5a6699
+		sourceLineageTag: gender
+		summarizeBy: none
+		sourceColumn: gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column birthdate
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: ed7e20e2-fa91-480e-bc41-4f30545e7d46
+		sourceLineageTag: birthdate
+		summarizeBy: none
+		sourceColumn: birthdate
+
+		annotation SummarizationSetBy = Automatic
+
+	column create_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 9762f66f-4b4b-432f-972f-e53c7937b8e9
+		sourceLineageTag: create_date
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_key
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 8c2c93fc-413f-44eb-bb19-0179cc4bf0c7
+		sourceLineageTag: customer_key
+		summarizeBy: none
+		sourceColumn: customer_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 38e204c1-b93d-4e82-a0e6-43639c01b684
+		sourceLineageTag: customer_id
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_number
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 3779457a-b526-4566-af09-59a528f237bc
+		sourceLineageTag: customer_number
+		summarizeBy: none
+		sourceColumn: customer_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 7c68e68e-5447-4ac0-aa88-4bb60366f80f
+		sourceLineageTag: first_name
+		summarizeBy: none
+		sourceColumn: first_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: a4afbbdc-5e7a-427f-b998-5ef3372ba4a2
+		sourceLineageTag: last_name
+		summarizeBy: none
+		sourceColumn: last_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column country
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 19c8ce87-88fe-4692-81ce-33abfe96abf5
+		sourceLineageTag: country
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	partition vw_dim_customers = entity
+		mode: directLake
+		source
+			entityName: vw_dim_customers
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

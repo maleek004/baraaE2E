@@ -1,14 +1,14 @@
 table vw_dim_products
-	lineageTag: 1b386a64-f19f-495a-8b10-2ce5f736682c
+	lineageTag: c20b8b82-3bca-4f13-8df1-2b4d84beb8c5
 	sourceLineageTag: [dbo].[vw_dim_products]
 
 	column product_key
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 248e2a9b-194c-45be-9d0e-307bd0c56639
+		lineageTag: 2b1f17c7-4c9a-48cf-aa52-4d8a885ea8b2
 		sourceLineageTag: product_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: product_key
 
 		annotation SummarizationSetBy = Automatic
@@ -17,9 +17,9 @@ table vw_dim_products
 		dataType: int64
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: dd709cca-76b5-41cf-8f3f-af2afd2dd346
+		lineageTag: 65e71745-02bb-440f-aabd-68671805f4d6
 		sourceLineageTag: product_id
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: product_id
 
 		annotation SummarizationSetBy = Automatic
@@ -27,7 +27,7 @@ table vw_dim_products
 	column product_number
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: 264bca24-de02-4812-9049-7c9520130afd
+		lineageTag: a7151c34-13da-4fbe-9e8f-fdda49a7c4b9
 		sourceLineageTag: product_number
 		summarizeBy: none
 		sourceColumn: product_number
@@ -37,7 +37,7 @@ table vw_dim_products
 	column product_name
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: 6189a6dd-c4cd-4e14-bbff-479b72cbf8cd
+		lineageTag: 19892fb2-47c6-43a1-bc3e-eb6e12d22d3b
 		sourceLineageTag: product_name
 		summarizeBy: none
 		sourceColumn: product_name
@@ -47,7 +47,7 @@ table vw_dim_products
 	column category_id
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: 2707eb08-cf7a-4d47-b50f-24b9e00cf484
+		lineageTag: fa29120e-b390-4244-9189-853071bd50e9
 		sourceLineageTag: category_id
 		summarizeBy: none
 		sourceColumn: category_id
@@ -57,7 +57,7 @@ table vw_dim_products
 	column category
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: 465d56d7-f57c-4895-b336-3403c6188a35
+		lineageTag: d48dcca6-9dd5-4349-abdd-4e1f9b527f8e
 		sourceLineageTag: category
 		summarizeBy: none
 		sourceColumn: category
@@ -67,7 +67,7 @@ table vw_dim_products
 	column subcategory
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: 99845847-a972-4e5b-8cfd-6104a04f4ae7
+		lineageTag: 6c99caad-7022-4247-8d1b-8563bfb692fc
 		sourceLineageTag: subcategory
 		summarizeBy: none
 		sourceColumn: subcategory
@@ -77,7 +77,7 @@ table vw_dim_products
 	column maintenance
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: cfbcc1fc-dc96-4d14-8172-7eaa348d4c98
+		lineageTag: 76e9da13-4105-4014-94ee-fa4795e60679
 		sourceLineageTag: maintenance
 		summarizeBy: none
 		sourceColumn: maintenance
@@ -88,9 +88,9 @@ table vw_dim_products
 		dataType: int64
 		formatString: 0
 		sourceProviderType: smallint
-		lineageTag: 41757e5a-8644-48ce-8552-4f7942e32c34
+		lineageTag: a2ef99d2-4c69-44b0-9749-63684ec3c28f
 		sourceLineageTag: cost
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: cost
 
 		annotation SummarizationSetBy = Automatic
@@ -98,7 +98,7 @@ table vw_dim_products
 	column product_line
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: 87d11e51-80aa-46fb-aa47-06ca322ff943
+		lineageTag: 0476aa94-c5dd-49a6-86a7-75bda95284ce
 		sourceLineageTag: product_line
 		summarizeBy: none
 		sourceColumn: product_line
@@ -109,7 +109,7 @@ table vw_dim_products
 		dataType: dateTime
 		formatString: General Date
 		sourceProviderType: date
-		lineageTag: 82372fe3-45a2-4104-abbb-b4095c7c4346
+		lineageTag: 16e24cc8-acf9-486c-b130-90fc6af1ff74
 		sourceLineageTag: start_date
 		summarizeBy: none
 		sourceColumn: start_date

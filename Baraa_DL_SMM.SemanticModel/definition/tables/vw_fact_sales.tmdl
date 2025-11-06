@@ -1,0 +1,637 @@
+table vw_fact_sales
+	lineageTag: 60cafd75-5d83-4276-936b-cfc3222fed9e
+	sourceLineageTag: [dbo].[vw_fact_sales]
+
+	measure '_01 Total Profit' = SUM(vw_fact_sales[profit])
+		formatString: #,0
+		lineageTag: 11ee0ecd-eaf3-40bb-8f52-8a7aaccafdb9
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+	measure '_01 Total Quantity' = ```
+			SUM(vw_fact_sales[quantity])
+			
+			
+			```
+		formatString: #,0
+		lineageTag: 0d6be2f7-83a4-401c-bc30-26f8e20380c7
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+	measure '_01 Total Revenue' = ```
+			SUM(vw_fact_sales[revenue])
+				
+			
+			```
+		formatString: #,0
+		lineageTag: bf17bee5-18fc-4e70-b667-e3c4a4b7c5d7
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+	measure '_01 Total Transactions' = DISTINCTCOUNT(vw_fact_sales[order_number])
+		formatString: #,0
+		lineageTag: 7c30d6ab-9283-4571-8302-8449bd357ec9
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+	measure '_02 PM Total Profit' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Profit],
+			        DATEADD(Dates[Date],-1,MONTH)
+			    ),
+			    BLANK()
+			)
+				
+			
+			```
+		formatString: 0
+		lineageTag: c581a02c-60bc-4f66-9b7d-45157c6ab70d
+
+		changedProperty = Name
+
+	measure '_02 PM Total Quantity' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Quantity],
+			        DATEADD(Dates[Date],-1,MONTH)
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 0eab829c-e1df-44a1-9be1-7df22126bfa2
+
+		changedProperty = Name
+
+	measure '_02 PM Total Revenue' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Revenue],
+			        DATEADD(Dates[Date],-1,MONTH)
+			    ),
+			    BLANK()
+			)
+				
+			
+			```
+		formatString: 0
+		lineageTag: c7e2c743-12cc-4e37-8a77-d8a34faea805
+
+		changedProperty = Name
+
+	measure '_02 PM Total Transactions' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Transactions],
+			        DATEADD(Dates[Date],-1,MONTH)
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: e641f08b-ff9b-4c9f-bcf5-aed7b57f3cff
+
+		changedProperty = Name
+
+	measure '_02 PY Total Profit' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Profit],
+			        SAMEPERIODLASTYEAR(Dates[Date])
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: aa2f5a47-530c-493c-9a0f-7d34bbf551d7
+
+		changedProperty = Name
+
+	measure '_02 PY Total Quantity' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Quantity],
+			        SAMEPERIODLASTYEAR(Dates[Date])
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: b4995f6f-5f50-49ce-b351-d68b9af25778
+
+		changedProperty = Name
+
+	measure '_02 PY Total Revenue' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Revenue],
+			        SAMEPERIODLASTYEAR(Dates[Date])
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: eda6b63d-2700-4e4b-aa7c-20b16c615b22
+
+		changedProperty = Name
+
+	measure '_02 PY Total Transactions' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]),
+			    CALCULATE(
+			        [_01 Total Transactions],
+			        SAMEPERIODLASTYEAR(Dates[Date])
+			    ),
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 44bb6583-7960-4443-95f0-33a0bc2c428a
+
+		changedProperty = Name
+
+	measure '_03 △PY Total Profit' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]) 
+			    && NOT(ISBLANK([_02 PY Total Profit])) 
+			    && NOT(ISBLANK([_01 Total Profit])) 
+			    && [_01 Total Profit] <> 0,
+			    [_01 Total Profit] - [_02 PY Total Profit],
+			    BLANK()
+			)
+				
+			
+			```
+		formatString: 0
+		lineageTag: dcf1545e-9806-43ac-a78e-9075d1e0db68
+
+		changedProperty = Name
+
+	measure '_03 △PY Total Quantity' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]) 
+			    && NOT(ISBLANK([_02 PY Total Quantity])) 
+			    && NOT(ISBLANK([_01 Total Quantity])) 
+			    && [_01 Total Quantity] <> 0,
+			    [_01 Total Quantity] - [_02 PY Total Quantity],
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 329fda04-3cd1-4f9c-a701-004f50c1e00e
+
+		changedProperty = Name
+
+	measure '_03 △PY Total Revenue' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]) 
+			    && NOT(ISBLANK([_02 PY Total Revenue])) 
+			    && NOT(ISBLANK([_01 Total Revenue])) 
+			    && [_01 Total Revenue] <> 0,
+			    [_01 Total Revenue] - [_02 PY Total Revenue],
+			    BLANK()
+			)
+				
+			
+			```
+		formatString: 0
+		lineageTag: 8747cb11-4472-4c24-b016-5171c124e2f4
+
+		changedProperty = Name
+
+	measure '_03 △PY Total Transactions' = ```
+			
+			IF(
+			    HASONEVALUE(Dates[Year]) 
+			    && NOT(ISBLANK([_02 PY Total Transactions])) 
+			    && NOT(ISBLANK([_01 Total Transactions])) 
+			    && [_01 Total Transactions] <> 0,
+			    [_01 Total Transactions] - [_02 PY Total Transactions],
+			    BLANK()
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 9f3e80a2-8f42-45fb-b7e4-0850027ad5ed
+
+		changedProperty = Name
+
+	measure '_04 △PM% Total Profit' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Profit]) || [_01 Total Profit] = 0,
+			    "--",
+			    DIVIDE([_01 Total Profit] - [_02 PM Total Profit], [_02 PM Total Profit], 0)
+			)
+				
+			
+			```
+		lineageTag: 16ded525-7a28-4a99-b657-54a86db6004e
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '_04 △PM% Total Quantity' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Quantity]) || [_01 Total Quantity] = 0,
+			    "--",
+			    DIVIDE([_01 Total Quantity] - [_02 PM Total Quantity], [_02 PM Total Quantity], 0)
+			)
+			
+			
+			```
+		lineageTag: 9440592f-a220-4ed7-aca8-33e8f0f784b3
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '_04 △PM% Total Revenue' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Revenue]) || [_01 Total Revenue] = 0,
+			    "--",
+			    DIVIDE([_01 Total Revenue] - [_02 PM Total Revenue], [_02 PM Total Revenue], 0)
+			)
+				
+			
+			```
+		lineageTag: eb026fb8-3155-435b-89db-b9204e22d719
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '_04 △PM% Total Transactions' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Transactions]) || [_01 Total Transactions] = 0,
+			    "--",
+			    DIVIDE([_01 Total Transactions] - [_02 PM Total Transactions], [_02 PM Total Transactions], 0)
+			)
+			
+			
+			```
+		lineageTag: f9ef2b1e-00a8-4d89-90eb-a54b6360a690
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '_04 △PY% Total Profit' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Profit]) || [_01 Total Profit] = 0,
+			    "--",
+			    DIVIDE([_01 Total Profit] - [_02 PY Total Profit], [_02 PY Total Profit], 0)
+			)
+				
+			
+			```
+		lineageTag: ee132eb7-b7c5-4efc-964a-8e4ca5d50197
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '_04 △PY% Total Revenue' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Revenue]) || [_01 Total Revenue] = 0,
+			    "--",
+			    DIVIDE([_01 Total Revenue] - [_02 PY Total Revenue], [_02 PY Total Revenue], 0)
+			)
+				
+			
+			```
+		lineageTag: 2968a564-db49-4614-b230-2744182409b9
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '_04 △PY% Total Quantity' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Quantity]) || [_01 Total Quantity] = 0,
+			    "--",
+			    DIVIDE([_01 Total Quantity] - [_02 PY Total Quantity], [_02 PY Total Quantity], 0)
+			)
+			
+			
+			```
+		lineageTag: c7d36744-4dff-40e4-8fc7-1b0af23f0529
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '_04 △PY% Total Transactions' = ```
+			
+			IF(
+			    ISBLANK([_01 Total Transactions]) || [_01 Total Transactions] = 0,
+			    "--",
+			    DIVIDE([_01 Total Transactions] - [_02 PY Total Transactions], [_02 PY Total Transactions], 0)
+			)
+			
+			
+			```
+		lineageTag: 7b5b73e9-6da9-4834-8f8d-a74295b7631c
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '_05 CF_△PM% Total Profit' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PM% Total Profit] > 0, "#6A994E",
+			    [_04 △PM% Total Profit] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: 8477ee96-eb2c-45c1-8d09-42c39cd298a0
+
+		changedProperty = Name
+
+	measure '_05 CF_△PM% Total Quantity' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PM% Total Quantity] > 0, "#6A994E",
+			    [_04 △PM% Total Quantity] = 0, "#808080",
+			    "#BC4749"
+			)
+			
+			
+			```
+		lineageTag: 847ac35f-2901-4364-b160-b3d41603c0c9
+
+		changedProperty = Name
+
+	measure '_05 CF_△PM% Total Revenue' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PM% Total Revenue] > 0, "#6A994E",
+			    [_04 △PM% Total Revenue] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: e39829dd-6cc3-49f5-a650-5dd1bbc1ef8d
+
+		changedProperty = Name
+
+	measure '_05 CF_△PM% Total Transactions' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PM% Total Transactions] > 0, "#6A994E",
+			    [_04 △PM% Total Transactions] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: 5c3b3515-13af-4c24-b449-c4f747026400
+
+		changedProperty = Name
+
+	measure '_05 CF_△PY% Total Profit' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PY% Total Profit] > 0, "#6A994E",
+			    [_04 △PY% Total Profit] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: 8fc63c0d-04c3-4807-a9ec-f2ffac037995
+
+		changedProperty = Name
+
+	measure '_05 CF_△PY% Total Quantity' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PY% Total Quantity] > 0, "#6A994E",
+			    [_04 △PY% Total Quantity] = 0, "#808080",
+			    "#BC4749"
+			)
+			
+			
+			```
+		lineageTag: 7d8f0920-a11b-48ad-9b98-54aba529d8a7
+
+		changedProperty = Name
+
+	measure '_05 CF_△PY% Total Revenue' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PY% Total Revenue] > 0, "#6A994E",
+			    [_04 △PY% Total Revenue] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: 668147e2-7747-41a1-a1e5-b3bdcfaf4b5f
+
+		changedProperty = Name
+
+	measure '_05 CF_△PY% Total Transactions' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [_04 △PY% Total Transactions] > 0, "#6A994E",
+			    [_04 △PY% Total Transactions] = 0, "#808080",
+			    "#BC4749"
+			)
+				
+			
+			```
+		lineageTag: 711c208b-96b1-4642-a69a-170eb04531f4
+
+		changedProperty = Name
+
+	column order_number
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: f97b4a37-8c56-40ec-a693-453d9c9832d7
+		sourceLineageTag: order_number
+		summarizeBy: none
+		sourceColumn: order_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_key
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 227caf84-79cf-4db2-a140-fa0e23170380
+		sourceLineageTag: product_key
+		summarizeBy: none
+		sourceColumn: product_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_key
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: bf40d33f-f05d-4506-a548-ea20ea346099
+		sourceLineageTag: customer_key
+		summarizeBy: none
+		sourceColumn: customer_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 97d59f1b-d532-4f00-88f3-4e6098c8438f
+		sourceLineageTag: order_date
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipping_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: c82e850e-004d-4d4f-8de5-154fb896b795
+		sourceLineageTag: shipping_date
+		summarizeBy: none
+		sourceColumn: shipping_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column due_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 8c95212b-bd3a-403b-a308-642a3d76ffc2
+		sourceLineageTag: due_date
+		summarizeBy: none
+		sourceColumn: due_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: e02e5410-2062-421a-a844-b8eeff7c8c1a
+		sourceLineageTag: quantity
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column price
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: a6d98aad-49be-456b-8e03-5109fed03656
+		sourceLineageTag: price
+		summarizeBy: sum
+		sourceColumn: price
+
+		annotation SummarizationSetBy = Automatic
+
+	column revenue
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 18dc2ff1-a6d0-43db-b1c3-f7adce9fcb1d
+		sourceLineageTag: revenue
+		summarizeBy: sum
+		sourceColumn: revenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column COGS
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 9f486731-e79e-4963-a75b-504009c24572
+		sourceLineageTag: COGS
+		summarizeBy: sum
+		sourceColumn: COGS
+
+		annotation SummarizationSetBy = Automatic
+
+	column profit
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 2999daee-758e-4b67-a761-514018dbabf1
+		sourceLineageTag: profit
+		summarizeBy: sum
+		sourceColumn: profit
+
+		annotation SummarizationSetBy = Automatic
+
+	partition vw_fact_sales = entity
+		mode: directLake
+		source
+			entityName: vw_fact_sales
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

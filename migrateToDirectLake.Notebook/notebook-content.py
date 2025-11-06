@@ -36,6 +36,9 @@
 # CELL ********************
 
 %pip install semantic-link-labs
+import sempy_labs as labs
+from sempy_labs import migration, directlake
+import sempy_labs.report as rep
 
 # METADATA ********************
 
@@ -102,6 +105,17 @@ migration.create_pqt_file(dataset = dataset_name, workspace = workspace_name)
 # ### Create the Direct Lake model based on the import/DQ semantic model
 # 
 # Calculated columns are not migrated to the Direct Lake model as they are not supported in Direct Lake mode.
+
+# CELL ********************
+
+2*2
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "jupyter_python"
+# META }
 
 # CELL ********************
 
@@ -207,9 +221,9 @@ report_name = 'fakemazon sales dashboard2' # Enter report name which you want to
 
 rep.report_rebind(
     report=report_name,
-    dataset=new_dataset_name,
-    report_workspace=workspace_name,
-    dataset_workspace=new_dataset_workspace_name)
+    dataset='fakemazon sales dashboard2',
+    report_workspace='E2E Baraa',
+    dataset_workspace='E2E Baraa')
 
 # METADATA ********************
 

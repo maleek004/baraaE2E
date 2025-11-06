@@ -1,0 +1,12 @@
+relationship 4a7a4742-dd55-c125-19c2-aeb7057d6b5b
+	fromColumn: vw_fact_sales.order_date
+	toColumn: Dates.Date
+
+relationship dee50772-fe7a-5e70-2c2b-ace98f45315a
+	fromColumn: vw_fact_sales.customer_key
+	toColumn: vw_dim_customers.customer_key
+
+relationship 98605237-89ea-3672-f7a6-bb615339a143
+	fromColumn: vw_fact_sales.product_key
+	toColumn: vw_dim_products.product_key
+

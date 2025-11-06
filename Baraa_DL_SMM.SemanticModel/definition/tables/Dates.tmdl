@@ -1,12 +1,12 @@
 table Dates
-	lineageTag: cf738dfc-7e65-4f99-ab7a-032a97dfda14
+	lineageTag: 7e717551-aaa7-4986-9395-9e5c7a005ab0
 	sourceLineageTag: [dbo].[Dates]
 
 	column Date
 		dataType: dateTime
 		formatString: General Date
 		sourceProviderType: date
-		lineageTag: 4dca77a1-ef16-481b-bc3b-294c01a0c3e8
+		lineageTag: b4420706-b57c-4c65-adb0-a0f54f6bda5f
 		sourceLineageTag: Date
 		summarizeBy: none
 		sourceColumn: Date
@@ -17,9 +17,9 @@ table Dates
 		dataType: int64
 		formatString: 0
 		sourceProviderType: int
-		lineageTag: b96212c8-b69b-4d8c-813a-9d507f41f9d0
+		lineageTag: 85e809a4-98c8-4719-baaf-516e20537453
 		sourceLineageTag: Day
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: Day
 
 		annotation SummarizationSetBy = Automatic
@@ -28,9 +28,9 @@ table Dates
 		dataType: int64
 		formatString: 0
 		sourceProviderType: int
-		lineageTag: bbfd33d4-b8d2-4518-8a66-a8b3f4512bfd
+		lineageTag: 7ee8f5bb-2a16-431b-a969-9bc2901dcaf3
 		sourceLineageTag: Year
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: Year
 
 		annotation SummarizationSetBy = Automatic
@@ -39,9 +39,9 @@ table Dates
 		dataType: int64
 		formatString: 0
 		sourceProviderType: int
-		lineageTag: 2cacc564-247c-4058-86db-b886edbd9a61
+		lineageTag: 50da1ae3-b637-4454-9451-43c8c5565229
 		sourceLineageTag: Month_Num
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: Month_Num
 
 		annotation SummarizationSetBy = Automatic
@@ -49,7 +49,7 @@ table Dates
 	column Month_Short
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: d56f3a58-014a-4d2e-855f-16377fe58cf1
+		lineageTag: 195fd12a-e3d3-4f1e-a686-2e7232344eb5
 		sourceLineageTag: Month_Short
 		summarizeBy: none
 		sourceColumn: Month_Short
@@ -59,7 +59,7 @@ table Dates
 	column Month
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: 7490aa48-76c7-497c-89dc-4ff17ac168a9
+		lineageTag: 232deb7e-9f11-4e0a-a69f-f198d3068906
 		sourceLineageTag: Month
 		summarizeBy: none
 		sourceColumn: Month
@@ -70,9 +70,9 @@ table Dates
 		dataType: int64
 		formatString: 0
 		sourceProviderType: bigint
-		lineageTag: 85bee513-b7da-416c-a054-1e2aad0b7bd8
+		lineageTag: d8f45c2c-c1d9-4f62-9ad9-8b1d98a8b208
 		sourceLineageTag: Weekday
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: Weekday
 
 		annotation SummarizationSetBy = Automatic
@@ -80,20 +80,41 @@ table Dates
 	column Day_of_Week
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: 6227c560-564e-4106-bd0a-081b7a013bbe
+		lineageTag: 8ddfed07-d927-46ec-8836-808b02dd0816
 		sourceLineageTag: Day_of_Week
 		summarizeBy: none
 		sourceColumn: Day_of_Week
 
 		annotation SummarizationSetBy = Automatic
 
+	column Quarter
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 227615c2-18f6-4661-b3c2-e49225f6ea65
+		sourceLineageTag: Quarter
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
 	column Year_Month
 		dataType: string
 		sourceProviderType: varchar(8000)
-		lineageTag: b9f5150e-80c3-4753-a9f7-b9c7f76ab223
+		lineageTag: cc23078a-2594-4c2f-b146-8c937fa89249
 		sourceLineageTag: Year_Month
 		summarizeBy: none
 		sourceColumn: Year_Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_Year
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: ca4b8ad9-80fc-457d-a876-942a46885f13
+		sourceLineageTag: Month_Year
+		summarizeBy: none
+		sourceColumn: Month_Year
 
 		annotation SummarizationSetBy = Automatic
 
