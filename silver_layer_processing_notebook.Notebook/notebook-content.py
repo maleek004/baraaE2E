@@ -9,12 +9,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "a48b4024-fefe-4485-8f27-037b991e16f8",
-# META       "default_lakehouse_name": "Baraa_LH6",
+# META       "default_lakehouse": "3a15daa0-1517-4964-82d7-ea00507b8389",
+# META       "default_lakehouse_name": "Baraa_LH",
 # META       "default_lakehouse_workspace_id": "9bb22313-ca99-4235-bcf0-16cf2704e122",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "a48b4024-fefe-4485-8f27-037b991e16f8"
+# META           "id": "3a15daa0-1517-4964-82d7-ea00507b8389"
 # META         }
 # META       ]
 # META     }

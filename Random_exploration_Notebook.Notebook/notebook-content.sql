@@ -40,10 +40,26 @@
 -- * found out that the day difference between the due date and order date is a constant 12 and used that information to fill the rows where order date is null  
 -- 
 -- ### Some observations
+-- * **important:** The granularity of the sales data is at the product per order *(product line)* level ... so each product bought for each order sits on a different row
 -- * some products are sold at prices lower than their cost which leads to a few losses in the dataset . product key of some of these products that were sold on discount at least once: (249,294,251,248,104,282,290)  
 -- *  the Average order items per order is 2. orders with the highest items have 8 items 
 -- * 17 products have NULL values as their product line ... Which i am still unable to fix 
 -- * There are 337 customers (out of 18484) whose country is unknown - i have added a random country between ['Australia', 'United States', 'Canada', 'Germany','United Kingdom', 'France'] to these entries.
+
+
+-- CELL ********************
+
+select order_number , COUNT(*) frequency
+from vw_fact_sales
+group by order_number
+order by frequency desc
+
+-- METADATA ********************
+
+-- META {
+-- META   "language": "sql",
+-- META   "language_group": "sqldatawarehouse"
+-- META }
 
 -- CELL ********************
 
